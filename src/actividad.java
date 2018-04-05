@@ -13,8 +13,6 @@ public class actividad {
 	}
 
 	
-	
-	
 	// Getters & Setters
 	public int getTiempo_inicio() {
 		return tiempo_inicio;
@@ -44,8 +42,6 @@ public class actividad {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	
 	
 	
 	
