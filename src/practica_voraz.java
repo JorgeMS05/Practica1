@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+import java.io.*;
+
 
 
 public class practica_voraz {
@@ -87,20 +89,76 @@ public class practica_voraz {
 	
 	
 	
-	private void exec() {	
+	private void exec() {
 		
-		int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
+		boolean aux = true;
+		//Variable para la lectura del fichero
+		File archivo = null;
+	    FileReader fr = null;
+	    BufferedReader br = null;
 		
-		List<actividad> lista_actividades = generar_conjunto(num_actividades);
-		//System.out.println(lista_actividades.get(lista_actividades.size()-1).getId());
-		List<actividad> shorted_actividades = s_finish(lista_actividades, lista_actividades.size());
-		for (int i = 0; i < shorted_actividades.size(); i++){
-			System.out.println(shorted_actividades.get(i).getId() + ", inicio: " + shorted_actividades.get(i).getTiempo_inicio() + ", fin: " + shorted_actividades.get(i).getTiempo_fin());
+		int opcion = Integer.parseInt( JOptionPane.showInputDialog("COMO KIERES JUGAR A ESTO LOCO????"));
+		
+		
+		while(aux) {
+			switch(opcion) {
+			
+			case 1:
+				aux = false;
+				int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
+				
+				List<actividad> lista_actividades = generar_conjunto(num_actividades);
+				//System.out.println(lista_actividades.get(lista_actividades.size()-1).getId());
+				List<actividad> shorted_actividades = s_finish(lista_actividades, lista_actividades.size());
+				for (int i = 0; i < shorted_actividades.size(); i++){
+					System.out.println(shorted_actividades.get(i).getId() + ", inicio: " + shorted_actividades.get(i).getTiempo_inicio() + ", fin: " + shorted_actividades.get(i).getTiempo_fin());
+				}
+				System.out.println(esSolucion(shorted_actividades).size());
+				
+				//the_voracious_one(el conjunto);
+				//en este se supone que hay que llamar a esSolucion. o luego, eso se vera despues
+				break;
+			case 2:
+				aux = false;
+				//Abrimos el archivo y cargamos las actividades:
+				try {
+					 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda (disponer del metodo readLine())
+					 archivo = new File ("ArchivoTexto.txt");
+			         fr = new FileReader (archivo);
+			         br = new BufferedReader(fr);
+
+			         // Lectura del fichero
+			         String linea = br.readLine();
+			         String palabra[] = linea.split(" ");
+			         int num_Actividades = Integer.parseInt(palabra[3]);
+			         System.out.println(palabra[3]);
+			         for (int i = 0; i < num_Actividades; i++) {			        	 
+			        	 linea = br.readLine();
+			        	 String palabras[] = linea.split(" ");
+			        	 //////////////////////////////////////////////////////////////////////
+			        	 ////// Aquí Jorge ////////////////////////////////////////////////////
+			        	 //////////////////////////////////////////////////////////////////////
+			         }
+			         
+			         /*while((linea = br.readLine()) != null) {
+			        	 System.out.println(linea);
+			        	 palabra[] = linea.split(" ");
+			        	 System.out.println("Longitud: " + palabra.length);
+			         }*/
+			         
+				}catch(Exception e) {
+					 e.printStackTrace();
+				}
+				break;
+			default:
+				opcion = Integer.parseInt( JOptionPane.showInputDialog("ESO NO VALE JOPUTAAAAAAAAAAA, QUE PARECES EL MURCIANO AQUÍ A PILLAR"));
+				break;
+			
+			}		
 		}
-		System.out.println(esSolucion(shorted_actividades).size());
+
 		
-		//the_voracious_one(el conjunto);
-		//en este se supone que hay que llamar a esSolucion. o luego, eso se vera despues
+		
 	}
 	
 	public static void main(String[] args){
