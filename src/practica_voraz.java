@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import java.io.*;
 
@@ -86,7 +87,59 @@ public class practica_voraz {
 		
 	}
 	
+	public void generarTxt (List<actividad> actividades) {
+		
+		FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("fichero_salida.txt");
+            pw = new PrintWriter(fichero);
+
+            for (int i = 0; i < actividades.size(); i++)
+                pw.println("Id de la actividad: " + actividades.get(i).getId());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
 	
+	}
+	
+	public void ARRIBAESPAÑA() {
+		
+		if(!new File("fichero_salida.txt").exists()) {
+			FileWriter fichero = null;
+	        PrintWriter pw = null;
+	        try
+	        {
+	            fichero = new FileWriter("fichero_salida.txt");
+	            pw = new PrintWriter(fichero);
+	
+	            for (int i = 0; i < actividades.size(); i++)
+	                pw.println("Id de la actividad: " + i);
+	
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        } finally {
+	           try {
+	           if (null != fichero)
+	              fichero.close();
+	           } catch (Exception e2) {
+	              e2.printStackTrace();
+	           }
+	        }
+		}else {
+			final JPanel panel = new JPanel();
+			JOptionPane.showMessageDialog(panel, "Tios como se carga la imagen solo me queda eso", "Dialog", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	
 	private void exec() {
@@ -139,12 +192,8 @@ public class practica_voraz {
 			        	 ////// Aquí Jorge ////////////////////////////////////////////////////
 			        	 //////////////////////////////////////////////////////////////////////
 			         }
+			         ARRIBAESPAÑA();
 			         
-			         /*while((linea = br.readLine()) != null) {
-			        	 System.out.println(linea);
-			        	 palabra[] = linea.split(" ");
-			        	 System.out.println("Longitud: " + palabra.length);
-			         }*/
 			         
 				}catch(Exception e) {
 					 e.printStackTrace();
