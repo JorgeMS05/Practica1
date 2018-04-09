@@ -11,10 +11,13 @@ import java.io.*;
 
 public class practica_voraz {
 	
+	
 	List<actividad> actividades = null;
 	Scanner scan = new Scanner(System.in);
 	
-	// Generación de las actividades
+	
+	
+	// Generación de las actividades por teclado
 	public List<actividad> generar_conjunto(int num_actividades){
 		
 		actividades = new ArrayList<actividad>(num_actividades);		
@@ -70,7 +73,8 @@ public class practica_voraz {
 					actividades.set(index, actividades.get(index + 1));
 					actividades.set(index + 1, aux);
 				}
-			}
+			}		
+			// stackOverFLow a partir de cierto valor (12000??)
 			s_finish(actividades, --iteracion);
 		}
 		// Devolvemos la lista ya ordenada
@@ -78,6 +82,8 @@ public class practica_voraz {
 		
 	}
 	
+	
+	// Método que genera el fichero de salida con la solución
 	public void generarTxt (List<actividad> actividades) {
 		
 		if(!new File("fichero_salida.txt").exists()) {
@@ -109,6 +115,37 @@ public class practica_voraz {
 	}
 	
 	
+	// Método para generar un fichero de entrada válido aleatorio
+	public void generarFicheroPruebas () {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("fichero_usuario.txt");
+            pw = new PrintWriter(fichero);
+            int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
+            pw.println("Número de actividades: " + num_actividades );
+            int t_ini, t_fin;
+            for (int i = 0; i < num_actividades; i++) {
+                t_ini = (int) (Math.random() * 10) + 1;
+                t_fin = (int) (t_ini + (Math.random() * 10) + 1);
+               
+                pw.println(t_ini + " " +  t_fin);
+            }
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           try {
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+    }
+	
+	
 	
 	private void exec() {
 		
@@ -127,11 +164,15 @@ public class practica_voraz {
 	    // Variables para controlar los tiempos de ejecución
 	    double time_start, time_end;	    
 	    
-		int opcion = Integer.parseInt( JOptionPane.showInputDialog("Escoja modo de entrada: 1(por teclado) 2(fichero de texto)"));
-		
 		
 		while(aux) {
+
 			
+			int opcion = Integer.parseInt( JOptionPane.showInputDialog("Escoja modo de entrada: \n  -1: Inserción por teclado."
+                    +"\n  -2: Empelando un fichero de texto creado previamente."
+                    +"\n  -3: El programa genera el archivo con el número de actividades deseadas."));
+
+
 			switch(opcion) {
 			
 			case 1:
@@ -209,8 +250,51 @@ public class practica_voraz {
 
 				break;
 				
+				
+			case 3:        
+	               aux = false;
+	               
+	               //Abrimos el archivo y cargamos las actividades:
+	               try {
+	            	   	 // La llamada a este método genera un fichero con x actividades aleatorias 
+	                     generarFicheroPruebas();
+
+	                     archivo = new File ("fichero_usuario.txt");
+	                     fr = new FileReader (archivo);
+	                     br = new BufferedReader(fr);
+	 
+	                     String linea = br.readLine();
+	                     String palabra[] = linea.split(" ");
+	                     int num_Actividades = Integer.parseInt(palabra[3]);
+	                     
+	                     actividades = new ArrayList<actividad>(num_Actividades);
+	                     
+	                     for (int i = 0; i < num_Actividades; i++) {                         
+	                         linea = br.readLine();
+	                         String palabras[] = linea.split(" ");
+	                         actividades.add(i, new actividad(Integer.parseInt(palabras[0]), Integer.parseInt(palabras[1]), i));                           
+	                     }
+
+	                     time_start = System.currentTimeMillis();
+	                     System.out.println(actividades.size());
+	                     System.out.println(actividades.size());
+
+	                     shorted_actividades = s_finish(actividades, actividades.size());	          
+	                     sol_actividades = esSolucion(shorted_actividades);
+	                     
+	                     time_end = System.currentTimeMillis();
+	                     System.out.println("Tiempo de ejecución " + ( time_end - time_start ) + " milisegundos");
+	                     
+	                     generarTxt(sol_actividades);
+	                     
+	                }catch(Exception e) {	           
+	                     e.printStackTrace();
+	                }
+	               
+	            break; 	
+				
 			default:
-					opcion = Integer.parseInt( JOptionPane.showInputDialog("Dato no válido, introducir 1 ó 2"));
+					JOptionPane.showMessageDialog(null, "Eliminar fichero_salida antes de ejecutar.", "Dialog", JOptionPane.ERROR_MESSAGE);
 					
 				break;		
 					
