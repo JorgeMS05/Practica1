@@ -13,12 +13,12 @@ public class practica_voraz {
 	List<actividad> actividades = null;
 	Scanner scan = new Scanner(System.in);
 	
-	
 	// Generación de las actividades
 	public List<actividad> generar_conjunto(int num_actividades){
 		
 		actividades = new ArrayList<actividad>(num_actividades);		
-		
+        System.out.println(actividades.size());
+
 		// Generar mediante entrada por teclado
 		for (int i = 0; i < num_actividades; i++){
 			System.out.println("Tiempo de inicio");
@@ -28,31 +28,25 @@ public class practica_voraz {
 			//Añadimos el índice a la lista, que corda con la id de la actividad
 			actividades.add(i, new actividad(inicio, fin, i));
 		}
-		
-		
-		/*System.out.println(actividades.size());
-		for (int i = 0; i < actividades.size(); i++){
-			System.out.println(actividades.get(i).getId() + ", inicio: " + actividades.get(i).getTiempo_inicio() + ", fin: " + actividades.get(i).getTiempo_fin());
-		}*/
-		
+			
 		return actividades;
 	}
 	
 
 	
-	// Métodos de genración de la solución
+	// Métodos de generación de la solución
 	public List<actividad> esSolucion(List<actividad> solucion){
 		
 		List<actividad> conjunto_actividades = new ArrayList<actividad>();
 
 		//Añadimos el primero
 		conjunto_actividades.add(solucion.get(0));
-		
+		// Se compara el tiempo_fin de la actividad N con el tiempo_inicio de la actividad N+1
 		for (int i = 0; i < solucion.size() - 1; i++){
 			int an = conjunto_actividades.get(conjunto_actividades.size()-1).getTiempo_fin();
 			int an2 = solucion.get(i+1).getTiempo_inicio();
-			
-			if (an < an2){
+			// Si la actividad N+1 empieza cuando acaba N o más tarde, se acepta
+			if (an <= an2){
 				conjunto_actividades.add(solucion.get(i+1));
 			} 
 			
@@ -67,21 +61,19 @@ public class practica_voraz {
 	public List<actividad> s_finish(List<actividad> actividades, int iteracion){
 		
 		if (iteracion > 1){
-			
+			// Se ordena la lista de actividades de menor a mayor en función de su tiempo_fin
 			for (int index = 0; index < actividades.size() - 1; index++){
 				int an = actividades.get(index).getTiempo_fin();			
 				int an2 = actividades.get(index + 1).getTiempo_fin();
 				if (an > an2){
 					actividad aux = actividades.get(index);
-					//System.out.print(aux.getId() + "   " + aux.getTiempo_fin() + "   " + aux.getTiempo_inicio());
 					actividades.set(index, actividades.get(index + 1));
 					actividades.set(index + 1, aux);
-					//System.out.print(actividades.get(index + 1).getId() + "   " + actividades.get(index + 1).getTiempo_fin() + "   " + actividades.get(index + 1).getTiempo_inicio());
 				}
 			}
 			s_finish(actividades, --iteracion);
 		}
-		
+		// Devolvemos la lista ya ordenada
 		return actividades;
 		
 	}
@@ -91,75 +83,110 @@ public class practica_voraz {
 	
 	private void exec() {
 		
+		// Bool para que se repita la petición de la entrada de datos hasta elegir por teclado o por fichero
 		boolean aux = true;
+		
 		//Variable para la lectura del fichero
 		File archivo = null;
 	    FileReader fr = null;
 	    BufferedReader br = null;
-		
-		int opcion = Integer.parseInt( JOptionPane.showInputDialog("COMO KIERES JUGAR A ESTO LOCO????"));
+	    
+	    // Generamos la lista final y la lista solución
+	    List<actividad> shorted_actividades = null;
+	    List<actividad> sol_actividades = null;
+	    
+	    // Variables para controlar los tiempos de ejecución
+	    double time_start, time_end;	    
+	    
+		int opcion = Integer.parseInt( JOptionPane.showInputDialog("Escoja modo de entrada: 1(por teclado) 2(fichero de texto)"));
 		
 		
 		while(aux) {
+			
 			switch(opcion) {
 			
 			case 1:
-				aux = false;
-				int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
-				
-				List<actividad> lista_actividades = generar_conjunto(num_actividades);
-				//System.out.println(lista_actividades.get(lista_actividades.size()-1).getId());
-				List<actividad> shorted_actividades = s_finish(lista_actividades, lista_actividades.size());
-				for (int i = 0; i < shorted_actividades.size(); i++){
-					System.out.println(shorted_actividades.get(i).getId() + ", inicio: " + shorted_actividades.get(i).getTiempo_inicio() + ", fin: " + shorted_actividades.get(i).getTiempo_fin());
-				}
-				System.out.println(esSolucion(shorted_actividades).size());
-				
-				//the_voracious_one(el conjunto);
-				//en este se supone que hay que llamar a esSolucion. o luego, eso se vera despues
-				break;
-			case 2:
-				aux = false;
-				//Abrimos el archivo y cargamos las actividades:
-				try {
-					 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda (disponer del metodo readLine())
-					 archivo = new File ("ArchivoTexto.txt");
-			         fr = new FileReader (archivo);
-			         br = new BufferedReader(fr);
+					aux = false;
+					int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
+					// Generamos la lista de actividades por teclado
+					List<actividad> lista_actividades = generar_conjunto(num_actividades);					
+					// Iniciamos el tiempo antes de las llamadas al algoritmo
+				    time_start = System.currentTimeMillis();
 
-			         // Lectura del fichero
-			         String linea = br.readLine();
-			         String palabra[] = linea.split(" ");
-			         int num_Actividades = Integer.parseInt(palabra[3]);
-			         System.out.println(palabra[3]);
-			         for (int i = 0; i < num_Actividades; i++) {			        	 
-			        	 linea = br.readLine();
-			        	 String palabras[] = linea.split(" ");
-			        	 //////////////////////////////////////////////////////////////////////
-			        	 ////// Aquí Jorge ////////////////////////////////////////////////////
-			        	 //////////////////////////////////////////////////////////////////////
-			         }
-			         
-			         /*while((linea = br.readLine()) != null) {
-			        	 System.out.println(linea);
-			        	 palabra[] = linea.split(" ");
-			        	 System.out.println("Longitud: " + palabra.length);
-			         }*/
-			         
-				}catch(Exception e) {
-					 e.printStackTrace();
-				}
+					shorted_actividades = s_finish(lista_actividades, lista_actividades.size());
+					sol_actividades = esSolucion(shorted_actividades);
+					
+					// Tiempo final 
+					time_end = System.currentTimeMillis();
+					System.out.println("Tiempo de ejecución " + ( time_end - time_start ) + " milisegundos");
+					
+					
+					/*for (int i = 0; i < shorted_actividades.size(); i++){
+						System.out.println(shorted_actividades.get(i).getId() + ", inicio: " + shorted_actividades.get(i).getTiempo_inicio() + ", fin: " + shorted_actividades.get(i).getTiempo_fin());
+					}
+					System.out.println(esSolucion(shorted_actividades).size());*/	
+					
 				break;
+				
+			case 2:
+				
+					aux = false;
+					
+					//Abrimos el archivo y cargamos las actividades:
+					try {
+						
+						 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda (disponer del metodo readLine())
+						 archivo = new File ("ArchivoTexto.txt");
+				         fr = new FileReader (archivo);
+				         br = new BufferedReader(fr);
+	
+				         // Lectura del fichero: se lee la primera línea y se detecta el cuarto elemento como el número en sí de actividades
+				         String linea = br.readLine();
+				         String palabra[] = linea.split(" ");
+				         int num_Actividades = Integer.parseInt(palabra[3]);
+				         
+				         // Inicializamos la lista en la que se almacenan las actividades
+				         actividades = new ArrayList<actividad>(num_Actividades);
+				         
+				         // A continuación se leen las siguientes líneas del fichero y se genera la lista de actividades
+				         for (int i = 0; i < num_Actividades; i++) {			        	 
+				        	 linea = br.readLine();
+				        	 String palabras[] = linea.split(" ");
+				        	 // Añadimos a la lista la correspondiente actividad
+				        	 actividades.add(i, new actividad(Integer.parseInt(palabras[0]), Integer.parseInt(palabras[1]), i));				        	
+				         }
+				         
+				         // Iniciamos el tiempo antes de las llamadas al algoritmo
+						 time_start = System.currentTimeMillis();
+				         
+				         // Ordenamos de menor a mayor según sus tiempo_final
+				         shorted_actividades = s_finish(actividades, actividades.size());
+				         // Generamos la lista con las actividades solución
+				         sol_actividades = esSolucion(shorted_actividades);
+				         
+				         // Tiempo final 
+						 time_end = System.currentTimeMillis();
+						 System.out.println("Tiempo de ejecución " + ( time_end - time_start ) + " milisegundos");
+				         
+						
+					}catch(Exception e) {
+						 e.printStackTrace();
+					}
+					
+				break;
+				
 			default:
-				opcion = Integer.parseInt( JOptionPane.showInputDialog("ESO NO VALE JOPUTAAAAAAAAAAA, QUE PARECES EL MURCIANO AQUÍ A PILLAR"));
-				break;
-			
+					opcion = Integer.parseInt( JOptionPane.showInputDialog("Dato no válido, introducir 1 ó 2"));
+					
+				break;		
+					
 			}		
 		}
 
 		
-		
 	}
+	
+	
 	
 	public static void main(String[] args){
 		new practica_voraz().exec();		
