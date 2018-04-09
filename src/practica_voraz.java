@@ -18,7 +18,6 @@ public class practica_voraz {
 	public List<actividad> generar_conjunto(int num_actividades){
 		
 		actividades = new ArrayList<actividad>(num_actividades);		
-        System.out.println(actividades.size());
 
 		// Generar mediante entrada por teclado
 		for (int i = 0; i < num_actividades; i++){
@@ -109,37 +108,6 @@ public class practica_voraz {
 		}
 	}
 	
-	
-	
-	// Método 
-	public void ARRIBAESPAÑA() {
-		
-		if(!new File("fichero_salida.txt").exists()) {
-			FileWriter fichero = null;
-	        PrintWriter pw = null;
-	        try
-	        {
-	            fichero = new FileWriter("fichero_salida.txt");
-	            pw = new PrintWriter(fichero);
-	
-	            for (int i = 0; i < actividades.size(); i++)
-	                pw.println("Id de la actividad: " + i);
-	
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally {
-	           try {
-	           if (null != fichero)
-	              fichero.close();
-	           } catch (Exception e2) {
-	              e2.printStackTrace();
-	           }
-	        }
-		}else {
-			final JPanel panel = new JPanel();
-			JOptionPane.showMessageDialog(panel, "", "Dialog", JOptionPane.ERROR_MESSAGE);
-		}
-	}
 	
 	
 	private void exec() {
@@ -248,7 +216,6 @@ public class practica_voraz {
 					
 			}		
 		}
-
 		
 	}
 	
