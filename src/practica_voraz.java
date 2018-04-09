@@ -81,29 +81,37 @@ public class practica_voraz {
 	
 	public void generarTxt (List<actividad> actividades) {
 		
-		FileWriter fichero = null;
-        PrintWriter pw = null;
-        try
-        {
-            fichero = new FileWriter("fichero_salida.txt");
-            pw = new PrintWriter(fichero);
-
-            for (int i = 0; i < actividades.size(); i++)
-                pw.println("Id de la actividad: " + actividades.get(i).getId());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
-        }
+		if(!new File("fichero_salida.txt").exists()) {
+			FileWriter fichero = null;
+	        PrintWriter pw = null;
+	        try
+	        {
+	            fichero = new FileWriter("fichero_salida.txt");
+	            pw = new PrintWriter(fichero);
 	
+	            for (int i = 0; i < actividades.size(); i++)
+	                pw.println("Id de la actividad: " + actividades.get(i).getId());
+	
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        } finally {
+	           try {
+	           if (null != fichero)
+	              fichero.close();
+	           } catch (Exception e2) {
+	              e2.printStackTrace();
+	           }
+	        }
+		}else {
+			
+			final JPanel panel = new JPanel();
+			JOptionPane.showMessageDialog(panel, "Eliminar fichero_salida antes de ejecutar.", "Dialog", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
+	
+	
+	// Método 
 	public void ARRIBAESPAÑA() {
 		
 		if(!new File("fichero_salida.txt").exists()) {
@@ -129,7 +137,7 @@ public class practica_voraz {
 	        }
 		}else {
 			final JPanel panel = new JPanel();
-			JOptionPane.showMessageDialog(panel, "Tios como se carga la imagen solo me queda eso", "Dialog", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(panel, "", "Dialog", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -179,44 +187,18 @@ public class practica_voraz {
 					}
 					System.out.println(esSolucion(shorted_actividades).size());*/	
 					
+					// Generamos el txt final con las soluciones
+					generarTxt(sol_actividades);
+					
 				break;
 				
-			case 2:
-<<<<<<< HEAD
-				aux = false;
-				//Abrimos el archivo y cargamos las actividades:
-				try {
-					 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda (disponer del metodo readLine())
-					 archivo = new File ("ArchivoTexto.txt");
-			         fr = new FileReader (archivo);
-			         br = new BufferedReader(fr);
-
-			         // Lectura del fichero
-			         String linea = br.readLine();
-			         String palabra[] = linea.split(" ");
-			         int num_Actividades = Integer.parseInt(palabra[3]);
-			         System.out.println(palabra[3]);
-			         for (int i = 0; i < num_Actividades; i++) {			        	 
-			        	 linea = br.readLine();
-			        	 String palabras[] = linea.split(" ");
-			        	 //////////////////////////////////////////////////////////////////////
-			        	 ////// Aquí Jorge ////////////////////////////////////////////////////
-			        	 //////////////////////////////////////////////////////////////////////
-			         }
-			         ARRIBAESPAÑA();
-			         
-			         
-				}catch(Exception e) {
-					 e.printStackTrace();
-				}
-=======
-				
+			case 2:			
 					aux = false;
 					
 					//Abrimos el archivo y cargamos las actividades:
 					try {
 						
-						 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura comoda (disponer del metodo readLine())
+						 // Apertura del fichero y creacion de BufferedReader para poder hacer una lectura cómoda (disponer del metodo readLine())
 						 archivo = new File ("ArchivoTexto.txt");
 				         fr = new FileReader (archivo);
 				         br = new BufferedReader(fr);
@@ -249,12 +231,14 @@ public class practica_voraz {
 						 time_end = System.currentTimeMillis();
 						 System.out.println("Tiempo de ejecución " + ( time_end - time_start ) + " milisegundos");
 				         
-						
+						 // Generamos el txt final con las soluciones
+						 generarTxt(sol_actividades);
+						 
 					}catch(Exception e) {
 						 e.printStackTrace();
 					}
 					
->>>>>>> 139a0d5d04690cd9415bc13a03700cbc3a6614fe
+
 				break;
 				
 			default:
