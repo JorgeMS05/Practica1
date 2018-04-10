@@ -16,8 +16,60 @@ public class practica_voraz {
 	Scanner scan = new Scanner(System.in);
 	
 	
+	///////////////////////////
+	///   Algoritmo Voraz   ///
+	///////////////////////////
+
+	// Métodos de generación de la solución
+	public List<actividad> esSolucion(List<actividad> solucion){
+		
+		List<actividad> conjunto_actividades = new ArrayList<actividad>();
+		
+		//Añadimos el primero
+		conjunto_actividades.add(solucion.get(0));
+		// Se compara el tiempo_fin de la actividad N con el tiempo_inicio de la actividad N+1
+		for (int i = 0; i < solucion.size() - 1; i++){
+			int an = conjunto_actividades.get(conjunto_actividades.size()-1).getTiempo_fin();
+			int an2 = solucion.get(i+1).getTiempo_inicio();
+			// Si la actividad N+1 empieza cuando acaba N o más tarde, se acepta
+			if (an <= an2){
+				conjunto_actividades.add(solucion.get(i+1));
+			} 
+			
+		}
+
+		return conjunto_actividades;		
+	}
+		
 	
-	// Generación de las actividades por teclado
+		
+	public List<actividad> s_finish(List<actividad> actividades, int iteracion){
+			
+		if (iteracion > 1){
+			// Se ordena la lista de actividades de menor a mayor en función de su tiempo_fin
+			for (int index = 0; index < actividades.size() - 1; index++){
+				int an = actividades.get(index).getTiempo_fin();			
+				int an2 = actividades.get(index + 1).getTiempo_fin();
+				if (an > an2){
+					actividad aux = actividades.get(index);
+					actividades.set(index, actividades.get(index + 1));
+					actividades.set(index + 1, aux);
+				}
+			}		
+			// stackOverFLow a partir de cierto valor (12000??)
+			s_finish(actividades, --iteracion);
+		}
+		// Devolvemos la lista ya ordenada
+		return actividades;
+			
+	}
+	
+	
+	
+	////////////////////////////////////////////
+	//    Introducción de datos por teclado   //
+	////////////////////////////////////////////
+	
 	public List<actividad> generar_conjunto(int num_actividades){
 		
 		actividades = new ArrayList<actividad>(num_actividades);		
@@ -35,55 +87,50 @@ public class practica_voraz {
 		return actividades;
 	}
 	
+	
+	
+	////////////////////////////////////////////////////////////////////////////
+	///  Generar fichero de entrada de tamaño variable con datos aleatorios  ///
+	////////////////////////////////////////////////////////////////////////////
+	
+	// Método para generar un fichero de entrada válido aleatorio
+	public void generarFicheroPruebas () {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try
+        {
+            fichero = new FileWriter("fichero_usuario.txt");
+            pw = new PrintWriter(fichero);
+            int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
+            pw.println("Número de actividades: " + num_actividades );
+            int t_ini, t_fin;
+            for (int i = 0; i < num_actividades; i++) {
+                t_ini = (int) (Math.random() * 10) + 1;
+                t_fin = (int) (t_ini + (Math.random() * 10) + 1);
+               
+                pw.println(t_ini + " " +  t_fin);
+            }
+ 
+        } catch (Exception e) {
+          
+        	e.printStackTrace();           
+        } finally {
+        	
+           try {
+           if (null != fichero)
+              fichero.close();
+           } catch (Exception e2) {
+              e2.printStackTrace();
+           }
+        }
+    }
+	
+	
+	
+	///////////////////////////////////////////////////
+	///  Generar fichero de salida con la solución  ///
+	///////////////////////////////////////////////////
 
-	
-	// Métodos de generación de la solución
-	public List<actividad> esSolucion(List<actividad> solucion){
-		
-		List<actividad> conjunto_actividades = new ArrayList<actividad>();
-
-		//Añadimos el primero
-		conjunto_actividades.add(solucion.get(0));
-		// Se compara el tiempo_fin de la actividad N con el tiempo_inicio de la actividad N+1
-		for (int i = 0; i < solucion.size() - 1; i++){
-			int an = conjunto_actividades.get(conjunto_actividades.size()-1).getTiempo_fin();
-			int an2 = solucion.get(i+1).getTiempo_inicio();
-			// Si la actividad N+1 empieza cuando acaba N o más tarde, se acepta
-			if (an <= an2){
-				conjunto_actividades.add(solucion.get(i+1));
-			} 
-			
-		}
-
-		return conjunto_actividades;		
-	}
-	
-	
-	
-	
-	public List<actividad> s_finish(List<actividad> actividades, int iteracion){
-		
-		if (iteracion > 1){
-			// Se ordena la lista de actividades de menor a mayor en función de su tiempo_fin
-			for (int index = 0; index < actividades.size() - 1; index++){
-				int an = actividades.get(index).getTiempo_fin();			
-				int an2 = actividades.get(index + 1).getTiempo_fin();
-				if (an > an2){
-					actividad aux = actividades.get(index);
-					actividades.set(index, actividades.get(index + 1));
-					actividades.set(index + 1, aux);
-				}
-			}		
-			// stackOverFLow a partir de cierto valor (12000??)
-			s_finish(actividades, --iteracion);
-		}
-		// Devolvemos la lista ya ordenada
-		return actividades;
-		
-	}
-	
-	
-	// Método que genera el fichero de salida con la solución
 	public void generarTxt (List<actividad> actividades) {
 		
 		if(!new File("fichero_salida.txt").exists()) {
@@ -115,36 +162,9 @@ public class practica_voraz {
 	}
 	
 	
-	// Método para generar un fichero de entrada válido aleatorio
-	public void generarFicheroPruebas () {
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        try
-        {
-            fichero = new FileWriter("fichero_usuario.txt");
-            pw = new PrintWriter(fichero);
-            int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
-            pw.println("Número de actividades: " + num_actividades );
-            int t_ini, t_fin;
-            for (int i = 0; i < num_actividades; i++) {
-                t_ini = (int) (Math.random() * 10) + 1;
-                t_fin = (int) (t_ini + (Math.random() * 10) + 1);
-               
-                pw.println(t_ini + " " +  t_fin);
-            }
- 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-           try {
-           if (null != fichero)
-              fichero.close();
-           } catch (Exception e2) {
-              e2.printStackTrace();
-           }
-        }
-    }
-	
+	////////////////////////////////
+	//  Gestión de la aplicación  //
+	////////////////////////////////
 	
 	
 	private void exec() {
@@ -175,6 +195,7 @@ public class practica_voraz {
 
 			switch(opcion) {
 			
+			// Introducir datos manualmente
 			case 1:
 					aux = false;
 					int num_actividades = Integer.parseInt( JOptionPane.showInputDialog("Introduce el número de actividades deseadas"));
@@ -201,6 +222,7 @@ public class practica_voraz {
 					
 				break;
 				
+			// Introducir datos desde un fichero ya existente (ArchivoTexto)
 			case 2:			
 					aux = false;
 					
@@ -250,7 +272,7 @@ public class practica_voraz {
 
 				break;
 				
-				
+			// Introducir datos desde un fichero generado automáticamente durante la ejecución	
 			case 3:        
 	               aux = false;
 	               
