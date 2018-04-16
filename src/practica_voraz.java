@@ -245,7 +245,7 @@ public class practica_voraz {
 	  		}
 	 		System.out.println("El conjunto de actividades que forman la solución son/es: " + solucion + ". \n");
 	 		for (int i = 0; i < sol_actividades.size(); i++){
-	 			System.out.println("Actividad número: " + shorted_actividades.get(i).getId() + "\n Tiempo de inicio: "
+	 			System.out.println("Actividad número: " + sol_actividades.get(i).getId() + "\n Tiempo de inicio: "
 	 							+ sol_actividades.get(i).getTiempo_inicio() + "\n Tiempo final: " + sol_actividades.get(i).getTiempo_fin());
 	 		}
 	 		
